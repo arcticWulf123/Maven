@@ -1,0 +1,12 @@
+{
+    "firstName": "Harry",
+    "lastName": "Osborn",
+    "age": 0,
+    "emailAddress": "harryosborn@gmail.com",
+    "phoneNumber": "092131423",
+    "dateOfBirth": "01-01-2000",
+    "homeAddress": "17 Newark Street",
+    "isEmployed": false,
+    "nationality": "Romanian",
+    "gender": "Male"
+}

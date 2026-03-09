@@ -1,0 +1,12 @@
+{
+    "firstName": "Albert",
+    "lastName": "Einstein",
+    "age": 25,
+    "emailAddress": "alberteinstein@example.com",
+    "phoneNumber": "+15550101",
+    "dateOfBirth": "1999-05-15",
+    "homeAddress": "123 Zero Abby",
+    "isEmployed": true,
+    "nationality": "German",
+    "gender": "male"
+}
