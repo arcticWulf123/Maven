@@ -53,9 +53,9 @@ public class Grades {
     public String toString() {
         return String.format("""
                 Subject : %s
-                Prelim Grade: %d
-                Midterm Grade: %d
-                Final Grade: %d
+                Prelim Grade: %.2f
+                Midterm Grade: %.2f
+                Final Grade: %.2f
                 """, getSubjectName(), getPrelimGrade(), getMidtermGrade(), getFinalGrade());
     }
 }

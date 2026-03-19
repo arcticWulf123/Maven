@@ -1,20 +1,20 @@
 [
-    {
-        "subjectName": "compro2",
-        "prelimGrade": 90.0,
-        "midtermGrade": 90.0,
-        "finalGrade": 90.0
-    },
-    {
-        "subjectName": "DSA",
-        "prelimGrade": 67.0,
-        "midtermGrade": 67.0,
-        "finalGrade": 67.0
-    },
-    {
-        "subjectName": "OOP",
-        "prelimGrade": 23.0,
-        "midtermGrade": 23.0,
-        "finalGrade": 23.0
-    }
+  {
+    "subjectName": "compro2",
+    "prelimGrade": 90.0,
+    "midtermGrade": 90.0,
+    "finalGrade": 90.0
+  },
+  {
+    "subjectName": "mmw",
+    "prelimGrade": 90.0,
+    "midtermGrade": 90.0,
+    "finalGrade": 90.0
+  },
+  {
+    "subjectName": "dsa",
+    "prelimGrade": 89.0,
+    "midtermGrade": 89.0,
+    "finalGrade": 89.0
+  }
 ]
