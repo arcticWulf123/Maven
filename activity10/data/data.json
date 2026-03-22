@@ -1,0 +1,22 @@
+[
+  {
+    "playerName": "jade",
+    "password": 1234,
+    "playerScore": 10
+  },
+  {
+    "playerName": "liam",
+    "password": 4321,
+    "playerScore": 0
+  },
+  {
+    "playerName": "ahron",
+    "password": 6789,
+    "playerScore": 5
+  },
+  {
+    "playerName": "janice",
+    "password": 7231,
+    "playerScore": 0
+  }
+]
