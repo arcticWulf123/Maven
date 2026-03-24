@@ -1,4 +1,4 @@
-package com.hangman;
+package com.hangmanwithclient;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,14 +6,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.hangman.model.Player;
+import com.hangmanwithclient.model.Player;
+
 import java.lang.reflect.Type;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Main {
     public static String gChars;
@@ -21,7 +26,8 @@ public class Main {
     public static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
-        loadData();
+        onServer();
+        // loadData();
         System.out.println("""
                 [1] Login
                 [2] Signup
@@ -41,26 +47,70 @@ public class Main {
         }
     }
 
+    public static void onServer() {
+        String randomWord = getRandomWord();
+        int port = 8000;
+
+        try (ServerSocket server = new ServerSocket(port)) {
+            System.out.println("Waiting for client to be connected...");
+            Socket client = server.accept(); // locks in the client
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true); // sends out message to the client
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream())); // reads input from
+                                                                                                    // the client
+
+            System.out.println("Client is connected...");
+
+            while (true) {
+                // listen for client message
+                System.out.println("Waiting for client message...");
+
+                // read client's message
+                String message = in.readLine();
+                
+                // determine if server's quitting
+                if (message == null || message.equalsIgnoreCase("/quit")) {
+                    System.out.println("Server disconnected...");
+                    break;
+                }
+
+                // display client's message
+                System.out.println("Client: " + message);
+
+                // reply to client
+                // type your message
+                out.println("Guess a letter in: **********");
+                String reply = in.readLine();
+                // send your message
+                // out.println(serverReply);
+
+            }
+
+            out.close();
+            in.close();
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void signUp() throws IOException {
         sc.nextLine();
         Player p = new Player();
-        while (true) {
-            System.out.print("Enter your username: ");
-            String name = sc.nextLine();
-            System.out.print("Enter your 4-digit password: ");
-            int password = sc.nextInt();
-            p.setPlayerName(name);
-            p.setPassword(password);
-            p.setPlayerScore(0);
-            players.add(p);
-            break;
-        }
+        System.out.print("Enter your username: ");
+        String name = sc.nextLine();
+        System.out.print("Enter your 4-digit password: ");
+        int password = sc.nextInt();
+        p.setPlayerName(name);
+        p.setPassword(password);
+        p.setPlayerScore(0);
+        players.add(p);
         playGame(p.getPlayerName());
     }
 
-    public static void playGame(String name) throws IOException {
-        System.out.println("Player name: " + name);
+    public static String playGame(String name) throws IOException {
+        // System.out.println("Player name: " + name);
         String response = "";
+        String toBeSent = "";
         do { // while loop continues if user inputs y
             int[] chances = { 10 }; // gives player 10 max guesses
             String randomWord = getRandomWord(); // calls the getRandomWord method and stores it in randomWord
@@ -72,17 +122,20 @@ public class Main {
             gChars = ""; // to track already guessed letters
             String completedWord = ""; // for comparison with the random word
             for (int i = 1; i <= chances[0] && !isWordComplete(chars, randomWord); i++) {
-                System.out.print("Enter a letter in word ********** > ");
+                boolean isAlreadyGuessed = false;
+                System.out.println(randomWord);
+                System.out.print("Enter a letter in word ************ > ");
                 char userGuess = sc.next().charAt(0);
                 sc.nextLine();
-                boolean isCorrect = guessWord(randomWord, userGuess, chars, score);
-                if (isCorrect) {
+                boolean isCorrect = guessWord(randomWord, userGuess, chars, score, isAlreadyGuessed);
+                if (isCorrect && !isAlreadyGuessed) {
                     System.out.println("Correct guess!");
                 } else {
                     System.out.println("Incorrect guess!");
-                    if (score[0] == 0)
-                        score[0] += 0;
                     score[0]--;
+                    if (score[0] < 0)
+                        score[0] = 0;
+
                 }
                 System.out.println(chars);
             }
@@ -116,18 +169,26 @@ public class Main {
             if (response.contains("y")) { // continues after y
                 continue;
             } else if (response.contains("n")) { // breaks the loop, then proceeds to leaderboard
+                sc.close();
                 break;
-            } else {
-                System.out.print("Invalid response, y or n: ");
-                sc.next();
             }
-            sc.close();
+            completedWord = toBeSent;
         } while (response.contains("y"));
+        return toBeSent;
     }
 
     public static void leaderboard() {
         System.out.printf("%-9s %-1s \n", "NAME", "SCORE");
-        players.sort((p1, p2) -> Integer.compare(p2.getPlayerScore(), p1.getPlayerScore()));
+        for (int i = 0; i < players.size(); i++) {
+            for (int j = i + 1; j < players.size(); j++) {
+                if (players.get(i).getPlayerScore() < players.get(j).getPlayerScore()) {
+                    Player s;
+                    s = players.get(j);
+                    players.set(j, players.get(i));
+                    players.set(i, s);
+                }
+            }
+        }
         for (Player p : players) {
             System.out.printf("%-9s %-1d \n", p.getPlayerName(), p.getPlayerScore());
         }
@@ -170,7 +231,6 @@ public class Main {
         } else {
             System.out.println("Bye!");
         }
-        System.out.println("Keep current score? (y/n): ");
     }
 
     public static void loadData() {
@@ -201,10 +261,10 @@ public class Main {
         return word;
     }
 
-    public static boolean guessWord(String word, char user, char[] words, int[] n) {
+    public static boolean guessWord(String word, char user, char[] words, int[] n, boolean isGuessed) {
         if (gChars.contains(user + "")) {
             System.out.println(user + " is already guessed.");
-            return true;
+            return isGuessed;
         }
         int matchCount = 0;
         boolean isCorrect = false;
@@ -219,6 +279,9 @@ public class Main {
 
         if (isCorrect) {
             gChars += user;
+        }
+        if (isCorrect && !isGuessed) {
+            return true;
         }
 
         return isCorrect;
