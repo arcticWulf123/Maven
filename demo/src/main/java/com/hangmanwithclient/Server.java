@@ -1,53 +1,26 @@
 package com.hangmanwithclient;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.hangmanwithclient.model.Player;
 
 import java.lang.reflect.Type;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
-public class Main {
+public class Server {
     public static String gChars;
     public static ArrayList<Player> players = new ArrayList<>();
     public static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
         onServer();
-        // loadData();
-        System.out.println("""
-                [1] Login
-                [2] Signup
-                [3] Leaderboard
-                """);
-        int c = sc.nextInt();
-        switch (c) {
-            case 1:
-                login();
-                break;
-            case 2:
-                signUp();
-                break;
-            case 3:
-                leaderboard();
-                break;
-        }
     }
 
     public static void onServer() {
+        loadData();
         String randomWord = getRandomWord();
         int port = 8000;
 
@@ -56,32 +29,26 @@ public class Main {
             Socket client = server.accept(); // locks in the client
             PrintWriter out = new PrintWriter(client.getOutputStream(), true); // sends out message to the client
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream())); // reads input from
-                                                                                                    // the client
+                                                                                                    // client
 
             System.out.println("Client is connected...");
 
-            while (true) {
-                // listen for client message
-                System.out.println("Waiting for client message...");
+            System.out.println("Waiting for client username...");
+            String username = in.readLine();
+            System.out.println(username);
+            System.out.println("Waiting for client's password...");
+            int password = Integer.parseInt(in.readLine());
 
-                // read client's message
-                String message = in.readLine();
-                
+            login(username, password);
+
+            while (true) {
+                int message = Integer.parseInt(in.readLine());
+
                 // determine if server's quitting
-                if (message == null || message.equalsIgnoreCase("/quit")) {
+                if (message == 0) {
                     System.out.println("Server disconnected...");
                     break;
                 }
-
-                // display client's message
-                System.out.println("Client: " + message);
-
-                // reply to client
-                // type your message
-                out.println("Guess a letter in: **********");
-                String reply = in.readLine();
-                // send your message
-                // out.println(serverReply);
 
             }
 
@@ -93,13 +60,9 @@ public class Main {
         }
     }
 
-    public static void signUp() throws IOException {
+    public static void signUp(String name, int password) throws IOException {
         sc.nextLine();
         Player p = new Player();
-        System.out.print("Enter your username: ");
-        String name = sc.nextLine();
-        System.out.print("Enter your 4-digit password: ");
-        int password = sc.nextInt();
         p.setPlayerName(name);
         p.setPassword(password);
         p.setPlayerScore(0);
@@ -107,10 +70,8 @@ public class Main {
         playGame(p.getPlayerName());
     }
 
-    public static String playGame(String name) throws IOException {
-        // System.out.println("Player name: " + name);
+    public static void playGame(String name) throws IOException {
         String response = "";
-        String toBeSent = "";
         do { // while loop continues if user inputs y
             int[] chances = { 10 }; // gives player 10 max guesses
             String randomWord = getRandomWord(); // calls the getRandomWord method and stores it in randomWord
@@ -172,9 +133,7 @@ public class Main {
                 sc.close();
                 break;
             }
-            completedWord = toBeSent;
         } while (response.contains("y"));
-        return toBeSent;
     }
 
     public static void leaderboard() {
@@ -202,16 +161,10 @@ public class Main {
         fw.close();
     }
 
-    public static void login() throws IOException {
-        sc.nextLine();
+    public static void login(String name, int password) throws IOException {
         boolean isFound = false;
-        System.out.print("Enter name: ");
-        String userName = sc.nextLine();
-        System.out.print("Enter password: ");
-        int password = sc.nextInt();
-        sc.nextLine();
         for (Player p : players) {
-            if (userName.equals(p.getPlayerName()) && password == p.getPassword()) {
+            if (name.equals(p.getPlayerName()) && password == p.getPassword()) {
                 System.out.printf("""
                         Welcome back! %s
                         Latest score is: %d
@@ -227,7 +180,7 @@ public class Main {
         System.out.print("Play a game? (y/n): ");
         String response = sc.nextLine();
         if (response.contains("y")) {
-            playGame(userName);
+            playGame(name);
         } else {
             System.out.println("Bye!");
         }
