@@ -54,12 +54,11 @@ public class Server {
                 String user1Message = in1.readLine();
                 if (user1Message == null)
                     break;
-                out2.println(user1Message);
 
                 String user2Message = in2.readLine();
                 if (user2Message == null)
                     break;
-                out1.println(user2Message);
+                
             }
 
             out1.close();

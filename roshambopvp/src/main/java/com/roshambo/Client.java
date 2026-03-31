@@ -25,15 +25,16 @@ public class Client {
                 System.out.println("--- You are User 2. Wait for User 1's turn!");
             }
             String status = in.readLine();
-            if (status.equals("READY")) {
-                System.out.println("---Connection established! Game has started");
-            }
             System.out.println("Enter your username: ");
             String username = sc.nextLine();
             out.println(username);
             System.out.println("Enter your password: ");
-            int password = sc.nextInt(); sc.nextLine();
+            int password = sc.nextInt();
+            sc.nextLine();
             out.println(password);
+            if (status.equals("READY")) {
+                System.out.println("---Connection established! Game has started");
+            }
             while (true) {
 
                 if (isMyTurn) {

@@ -5,5 +5,8 @@ package com.roshambo.Service;
 
 */
 public class Roshambo {
-    
+    private Picks pick;
+    public boolean whoWins (int pick, int pick2) {
+        
+    }
 }
