@@ -42,6 +42,9 @@ public class Game {
             if (word.charAt(i) == user) {
                 sb.setCharAt(i, user);
                 gChars.add(user);
+            } else {
+                System.out.println("Incorrect guess!");
+                return false;
             }
         }
 
@@ -57,9 +60,4 @@ public class Game {
             sb.append("*");
         }
     }
-
-    public char answer(char answer) {
-        return answer;
-    }
-
 }
