@@ -28,5 +28,10 @@
     "playerName": "Benny",
     "password": 924,
     "playerScore": 8
+  },
+  {
+    "playerName": "garry",
+    "password": 923,
+    "playerScore": 7
   }
 ]

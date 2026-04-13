@@ -36,4 +36,9 @@ public class Player {
     public void setPlayerScore(int playerScore) {
         this.playerScore = playerScore;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%-11s %d", getPlayerName(), getPlayerScore());
+    }
 }

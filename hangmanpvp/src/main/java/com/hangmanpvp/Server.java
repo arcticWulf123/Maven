@@ -9,14 +9,15 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hangmanpvp.Models.Player;
-import com.hangmanpvp.Service.Game;
+import com.hangmanpvp.Service.GameService;
+import com.hangmanpvp.Service.PlayerService;
 
 public class Server {
     public static ArrayList<Player> players = new ArrayList<>();
-
+    public static PlayerService playerService = new PlayerService();
+    public static GameService gameService = new GameService();
     public static void main(String[] args) {
         int port = 8000;
-        loadPlayers();
         try (ServerSocket server = new ServerSocket(port)) {
             System.out.println("Waiting for players to be connected...");
 
@@ -26,65 +27,70 @@ public class Server {
 
             System.out.println("User 1 is connected.");
 
-            out1.println("user1");
-            Socket client2 = server.accept();
-            PrintWriter out2 = new PrintWriter(client2.getOutputStream(), true);
-            BufferedReader in2 = new BufferedReader(new InputStreamReader(client2.getInputStream()));
-            System.out.println("User 2 connected.");
-            out2.println("user2");
-
-            System.out.println("Both can now play!");
-            out1.println("READY");
-            out2.println("READY");
-            String client1name = login(in1.readLine(), Integer.parseInt(in1.readLine()));
+            out1.println("Welcome to Hangman Game!");
+            String clientName = "";
             while (true) {
-                out1.println("Guess a letter in: " + currentWord());
-                String player1 = in1.readLine();
-            }
+                String client = in1.readLine();
+                switch (client) {
+                    case "1":
+                        clientName = in1.readLine();
+                        int password = Integer.parseInt(in1.readLine());
 
+                        boolean success = playerService.login(clientName, password);
+
+                        if (!success) {
+                            out1.println("Invalid username or password");
+                            continue;
+                        } else {
+                            out1.println("Logged in!");
+                        }
+                        break;
+                    case "2":
+                        clientName = in1.readLine();
+                        password = Integer.parseInt(in1.readLine());
+                        playerService.signUp(clientName,password);
+                        continue;
+                    case "3":
+                        playerService.showLeaderBoard();
+                        break;
+                }
+                break;
+            }
+            int currentScore = 10;
+
+            String word = gameService.getRandomWord();
+            out1.println(gameService.getCurrentState());
+
+            while (!gameService.isGameOver() && currentScore > 0) {
+                String userGuess = in1.readLine();
+                char guess = userGuess.charAt(0);
+
+                if (gameService.isAlreadyGuessed(guess)) {
+                    currentScore--;
+                    out1.println("Letter already guessed!");
+                } else {
+                    boolean correct = gameService.guess(guess);
+                    if (correct) {
+                        out1.println("Correct!");
+                    } else {
+                        currentScore--;
+                        out1.println("Incorrect guess!");
+                    }
+                }
+
+                if (gameService.isGameOver() || currentScore <= 0) {
+                    out1.printf("Game over! Final score: %d \n", currentScore);
+                } else {
+                    out1.println(gameService.getCurrentState());
+                }
+            }
+            out1.printf("Game over! Final score: %d \n", currentScore);
+            playerService.updateScore(clientName, currentScore);
+            playerService.showLeaderBoard();
+            playerService.saveData();
         } catch (IOException e) {
 
             System.out.println("Chat has ended...");
         }
-    }
-
-    public static String login(String name, int password) {
-        boolean isFound = false;
-        for (Player p : players) {
-            if (name.equals(p.getPlayerName()) && password == p.getPassword()) {
-                isFound = true;
-                break;
-            }
-        }
-        if (!isFound) {
-            System.out.println("Account not found...");
-        }
-        return name;
-    }
-
-    public static void signup(String name, int password) {
-        Player p = new Player();
-        p.setPlayerName(name);
-        p.setPassword(password);
-        p.setPlayerScore(0);
-        players.add(p);
-    }
-
-    public static void loadPlayers() {
-        try (FileReader fr = new FileReader("data/players.json")) {
-            Type playersList = new TypeToken<ArrayList<Player>>() {
-            }.getType();
-            Gson gson = new Gson();
-            players = gson.fromJson(fr, playersList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String currentWord() {
-        Game game = new Game();
-        String word = game.getRandomWord();
-        game.initializer(word);
-        return word;
     }
 }
