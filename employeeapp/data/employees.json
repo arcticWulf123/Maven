@@ -1,0 +1,16 @@
+[
+  {
+    "baseSalary": 7000.0,
+    "bonus": 2000.0,
+    "name": "Benjamin",
+    "employeeId": "3214",
+    "type": "SALARIED"
+  },
+  {
+    "hoursWorked": 60,
+    "hourlyRate": 520.0,
+    "name": "Lester",
+    "employeeId": "7823",
+    "type": "HOURLY"
+  }
+]

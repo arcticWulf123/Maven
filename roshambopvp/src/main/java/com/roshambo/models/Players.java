@@ -51,7 +51,7 @@ public class Players {
     }
 
     public double getWinrate() {
-        return winrate;
+        return (double) wins / (wins + losses) * 100;
     }
 
     public void setWinrate(double winrate) {

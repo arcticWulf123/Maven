@@ -5,7 +5,8 @@ import java.util.*;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import com.hangmanwithclient.model.Player;
+import com.hangmanwithclient.*;
+import com.hangmanwithclient.models.Player;
 
 import java.lang.reflect.Type;
 import java.net.*;

@@ -42,8 +42,7 @@ public abstract class Employee {
         return String.format("""
                 Name: %s
                 ID: %s
-                Type: %s
-                """, name, employeeId, type);
+                Type: %s""", name, employeeId, type);
     }
 
     @Override

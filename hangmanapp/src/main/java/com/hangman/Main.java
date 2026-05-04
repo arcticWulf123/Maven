@@ -44,17 +44,14 @@ public class Main {
     public static void signUp() throws IOException {
         sc.nextLine();
         Player p = new Player();
-        while (true) {
-            System.out.print("Enter your username: ");
-            String name = sc.nextLine();
-            System.out.print("Enter your 4-digit password: ");
-            int password = sc.nextInt();
-            p.setPlayerName(name);
-            p.setPassword(password);
-            p.setPlayerScore(0);
-            players.add(p);
-            break;
-        }
+        System.out.print("Enter your username: ");
+        String name = sc.nextLine();
+        System.out.print("Enter your 4-digit password: ");
+        int password = sc.nextInt();
+        p.setPlayerName(name);
+        p.setPassword(password);
+        p.setPlayerScore(0);
+        players.add(p);
         playGame(p.getPlayerName());
     }
 
@@ -72,17 +69,20 @@ public class Main {
             gChars = ""; // to track already guessed letters
             String completedWord = ""; // for comparison with the random word
             for (int i = 1; i <= chances[0] && !isWordComplete(chars, randomWord); i++) {
-                System.out.print("Enter a letter in word ********** > ");
+                boolean isAlreadyGuessed = false;
+                System.out.println(randomWord);
+                System.out.print("Enter a letter in word ************ > ");
                 char userGuess = sc.next().charAt(0);
                 sc.nextLine();
-                boolean isCorrect = guessWord(randomWord, userGuess, chars, score);
-                if (isCorrect) {
+                boolean isCorrect = guessWord(randomWord, userGuess, chars, score, isAlreadyGuessed);
+                if (isCorrect && !isAlreadyGuessed) {
                     System.out.println("Correct guess!");
                 } else {
                     System.out.println("Incorrect guess!");
-                    if (score[0] == 0)
-                        score[0] += 0;
                     score[0]--;
+                    if (score[0] < 0)
+                        score[0] = 0;
+
                 }
                 System.out.println(chars);
             }
@@ -116,18 +116,24 @@ public class Main {
             if (response.contains("y")) { // continues after y
                 continue;
             } else if (response.contains("n")) { // breaks the loop, then proceeds to leaderboard
+                sc.close();
                 break;
-            } else {
-                System.out.print("Invalid response, y or n: ");
-                sc.next();
             }
-            sc.close();
         } while (response.contains("y"));
     }
 
     public static void leaderboard() {
         System.out.printf("%-9s %-1s \n", "NAME", "SCORE");
-        players.sort((p1, p2) -> Integer.compare(p2.getPlayerScore(), p1.getPlayerScore()));
+        for (int i = 0; i < players.size(); i++) {
+            for (int j = i + 1; j < players.size(); j++) {
+                if (players.get(i).getPlayerScore() < players.get(j).getPlayerScore()) {
+                    Player s;
+                    s = players.get(j);
+                    players.set(j, players.get(i));
+                    players.set(i, s);
+                }
+            }
+        }
         for (Player p : players) {
             System.out.printf("%-9s %-1d \n", p.getPlayerName(), p.getPlayerScore());
         }
@@ -170,7 +176,6 @@ public class Main {
         } else {
             System.out.println("Bye!");
         }
-        System.out.println("Keep current score? (y/n): ");
     }
 
     public static void loadData() {
@@ -201,10 +206,10 @@ public class Main {
         return word;
     }
 
-    public static boolean guessWord(String word, char user, char[] words, int[] n) {
+    public static boolean guessWord(String word, char user, char[] words, int[] n, boolean isGuessed) {
         if (gChars.contains(user + "")) {
             System.out.println(user + " is already guessed.");
-            return true;
+            return isGuessed;
         }
         int matchCount = 0;
         boolean isCorrect = false;
@@ -219,6 +224,9 @@ public class Main {
 
         if (isCorrect) {
             gChars += user;
+        }
+        if (isCorrect && !isGuessed) {
+            return true;
         }
 
         return isCorrect;

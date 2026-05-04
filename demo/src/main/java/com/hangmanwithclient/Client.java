@@ -20,42 +20,24 @@ public class Client {
             System.out.println("Connected to the server. Welcome");
 
             while (true) {
-                System.out.print("""
-                        [1] Login
-                        [2] Signup
-                        [3] Leaderboard
-                        Choice: """);
                 int reply = sc.nextInt();
                 sc.nextLine();
-                switch (reply) {
-                    case 1:
-                        System.out.print("Enter username: ");
-                        String username = sc.nextLine();
-                        out.println(username);
-                        System.out.print("Enter password: ");
-                        int password = sc.nextInt();
-                        out.println(password);
-                        break;
-                }
-
-                // determine if server's quitting
+                System.out.print("Enter username: ");
+                String username = sc.nextLine();
+                out.println(username);
+                System.out.print("Enter password: ");
+                int password = sc.nextInt();
+                out.println(password);
                 if (reply == 0) {
                     System.out.println("Server disconnected...");
                     break;
                 }
             }
 
+            // determine if server's quitting
         } catch (IOException e) {
-            System.out.println("Can't connect right now...");
+            e.printStackTrace();
         }
 
-    }
-
-    public static void menu() {
-        System.out.print("""
-                [1] Login
-                [2] Signup
-                [3] Leaderboard
-                Choice: """);
     }
 }

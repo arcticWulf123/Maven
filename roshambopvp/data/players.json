@@ -1,16 +1,51 @@
 [
-    {
-        "username" : "jade",
-        "password" : 8732,
-        "wins" : 3,
-        "losses" : 10,
-        "winrate" : 23.07
-    },
-    {
-        "username" : "caryl",
-        "password" : 6532,
-        "wins" : 23,
-        "losses" : 0,
-        "winrate" : 100
-    }
+  {
+    "username": "jade",
+    "password": 1234,
+    "wins": 13,
+    "losses": 2,
+    "winrate": 23.07
+  },
+  {
+    "username": "caryl",
+    "password": 6532,
+    "wins": 12,
+    "losses": 6,
+    "winrate": 100.0
+  },
+  {
+    "username": "lester",
+    "password": 5698,
+    "wins": 8,
+    "losses": 2,
+    "winrate": 0.0
+  },
+  {
+    "username": "Calvin",
+    "password": 9832,
+    "wins": 7,
+    "losses": 2,
+    "winrate": 0.0
+  },
+  {
+    "username": "greg",
+    "password": 3412,
+    "wins": 4,
+    "losses": 5,
+    "winrate": 0.0
+  },
+  {
+    "username": "John",
+    "password": 3421,
+    "wins": 0,
+    "losses": 10,
+    "winrate": 0.0
+  },
+  {
+    "username": "yanni",
+    "password": 934,
+    "wins": 0,
+    "losses": 0,
+    "winrate": 0.0
+  }
 ]

@@ -1,12 +1,12 @@
 package com.activity11;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 
 import com.activity11.model.*;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class Main {
@@ -15,18 +15,34 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.print("""
-                [1] Add Employee
-                [2] View All Employees
-                [3] Save Records
-                [4] Load Records
-                [5] Exit
-                Choice: """);
-        int c = sc.nextInt();
-        switch (c) {
-            case 1:
-                addEmployee();
-                break;
+        while (true) {
+            System.out.print("""
+                    [1] Add Employee
+                    [2] View All Employees
+                    [3] Save Records
+                    [4] Load Records
+                    [5] Exit
+                    Choice:  """);
+            int c = sc.nextInt();
+            switch (c) {
+                case 1:
+                    addEmployee();
+                    continue;
+                case 2:
+                    viewEmployees();
+                    break;
+                case 3:
+                    saveData();
+                    System.out.println("Data saved...");
+                    continue;
+                case 4:
+                    loadData();
+                    System.out.println("Data loaded...");
+                    continue;
+                case 5:
+                    System.exit(0);
+                    break;
+            }
         }
     }
 
@@ -47,7 +63,7 @@ public class Main {
                 sc.nextLine();
                 System.out.print("Set name: ");
                 String name = sc.nextLine();
-                System.out.println("Set ID: ");
+                System.out.print("Set ID: ");
                 String id = sc.nextLine();
                 Employee s = new SalariedEmployee(salary, bonus, name, id);
                 employees.add(s);
@@ -62,7 +78,7 @@ public class Main {
                 sc.nextLine();
                 System.out.print("Set name: ");
                 String ename = sc.nextLine();
-                System.out.println("Set ID: ");
+                System.out.print("Set ID: ");
                 String eid = sc.nextLine();
                 Employee h = new HourlyEmployee(hoursWorked, hourlyRate, ename, eid);
                 employees.add(h);
@@ -74,21 +90,38 @@ public class Main {
     public static void viewEmployees() {
         for (Employee e : employees) {
             System.out.printf("""
-                    Name: %s
-                    Earnings: %.2f
-                    """, e.getName(), e.calculateEarnings());
+                    %s
+                    Earnings: %.2f \n
+                    """, e.toString(), e.calculateEarnings());
+        }
+    }
+
+    public static void saveData() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/employees.json"))) {
+            RuntimeTypeAdapterFactory<Employee> adapter = RuntimeTypeAdapterFactory
+                    .of(Employee.class, "type", true)
+                    .registerSubtype(SalariedEmployee.class, EmployeeType.SALARIED.name())
+                    .registerSubtype(HourlyEmployee.class, EmployeeType.HOURLY.name());
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapterFactory(adapter).create();
+            gson.toJson(employees, bw);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static void loadData() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/employees.json"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("data/employees.json"))) {
             RuntimeTypeAdapterFactory<Employee> adapter = RuntimeTypeAdapterFactory
-                    .of(Employee.class, "type") // "type" is the field name in JSON
+                    .of(Employee.class, "type", true)
                     .registerSubtype(SalariedEmployee.class, EmployeeType.SALARIED.name())
                     .registerSubtype(HourlyEmployee.class, EmployeeType.HOURLY.name());
 
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(adapter).create();
-            
+            Type employeesList = new TypeToken<ArrayList<Employee>>() {
+            }.getType();
+            employees = gson.fromJson(br, employeesList);
         } catch (IOException e) {
             e.printStackTrace();
         }

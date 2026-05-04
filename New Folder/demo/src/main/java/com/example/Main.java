@@ -17,9 +17,10 @@ public class Main {
     public static void uno() throws FileNotFoundException {
         // convert json file to object
         String json = "";
-        Scanner sc = new Scanner(new File("data/Person.json"));
-        while (sc.hasNextLine()) {
-            json += sc.nextLine();
+        try (Scanner sc = new Scanner(new File("data/Person.json"))) {
+            while (sc.hasNextLine()) {
+                json += sc.nextLine();
+            }
         }
         Gson gson = new Gson();
         Person p1 = gson.fromJson(json, Person.class);
