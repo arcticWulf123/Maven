@@ -18,7 +18,7 @@ public class WeatherService {
     public WeatherResponse getForecast(double lat, double lon) {
         client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("https://www.7timer.info/bin/astro.php?lon=%.2f&lat=%.2f&ac=0&unit=metric&output=json", lon, lat)))
+                .uri(URI.create(String.format("https://www.7timer.info/bin/astro.php?lon=%.2f&lat=%.2f&ac=0&unit=metric&output=json", lon, lat))) //add json at =
                 .GET()
                 .build();
         System.out.println("Requesting to the server....");
@@ -31,10 +31,12 @@ public class WeatherService {
                 System.out.println("SUCCESS! Raw JSON data received:");
                 System.out.println(response.body());
                 return gson.fromJson(response.body(), WeatherResponse.class);
+            } else {
+                return null;
             }
 
         } catch (IOException e) {
-            System.err.println("Error! Could not retrieve weather data...");
+            System.err.println("Cannot fetch data");
         } catch (InterruptedException e) {
             System.out.println("NETWORK ERROR: " + e.getMessage());
         }

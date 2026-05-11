@@ -15,6 +15,10 @@ public class Main {
 
         WeatherService weatherService = new WeatherService();
         WeatherResponse response = weatherService.getForecast(latitude, longitude);
+        if (response == null) {
+            System.out.println("Could not retrieve weather data");
+            System.exit(1);
+        }
          for (int i = 0; i < 3; i++) {
              System.out.println(response.getForecastsString(i));
          }
