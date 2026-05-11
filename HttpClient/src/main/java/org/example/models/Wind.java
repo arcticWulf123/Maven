@@ -4,7 +4,6 @@ public class Wind {
     private String direction;
     private int speed;
 
-    public Wind () {}
     public Wind (String direction, int speed) {
         this.direction = direction;
         this.speed = speed;

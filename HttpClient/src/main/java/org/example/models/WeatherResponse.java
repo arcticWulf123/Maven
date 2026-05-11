@@ -10,6 +10,19 @@ public class WeatherResponse {
     @SerializedName("dataseries")
     List <Forecast> forecasts = new ArrayList<>();
 
+    public WeatherResponse(){}
+    public List<Forecast> getForecasts() {
+        return forecasts;
+    }
+
+    public Forecast getForecastsString(int index) {
+        return forecasts.get(index);
+    }
+
+    public void setForecasts(List<Forecast> forecasts) {
+        this.forecasts = forecasts;
+    }
+
     public WeatherResponse(String product, List<Forecast> forecasts) {
         this.product = product;
         this.forecasts = forecasts;
