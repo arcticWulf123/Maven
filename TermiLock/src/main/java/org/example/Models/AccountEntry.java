@@ -1,6 +1,6 @@
 package org.example.Models;
 
-public abstract class PasswordEntry {
+public abstract class AccountEntry {
     private String key;
     public abstract String getKey();
 }

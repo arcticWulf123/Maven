@@ -1,10 +1,10 @@
 package org.example.Models;
 
-public class BankKey extends PasswordEntry implements Encryptable{
+public class BankAccount extends AccountEntry implements Encryptable{
     private int BankNumber;
     private String pin;
 
-    public BankKey(int BankNumber, String pin) {
+    public BankAccount(int BankNumber, String pin) {
         this.BankNumber = BankNumber;
         this.pin = pin;
     }

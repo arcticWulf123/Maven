@@ -1,20 +1,17 @@
 package org.example.Services;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import org.example.Models.User;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import org.example.Models.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-/*
-This class is to handle logic of passwords such as logging in and validating it
- */
+import java.util.*;
+
 public class UserService {
     private List<User> users = new ArrayList<>();
+    public static final String filePath = "data/users.json";
 
     public UserService() {
         loadUsers();
@@ -22,25 +19,42 @@ public class UserService {
 
     public boolean doesExist(String username, String password) {
         for (User user : users) {
-            if (user.getUsername().equals(username) &&  user.getPassword().equals(password)) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return true;
             }
         }
         return false;
     }
 
-    public void saveData(){
+    public void saveData() {
+        try (BufferedWriter br = new BufferedWriter(new FileWriter(filePath))) {
+            RuntimeTypeAdapterFactory<AccountEntry> accountFactory = RuntimeTypeAdapterFactory
+                    .of(AccountEntry.class, "type")
+                    .registerSubtype(SocialAccount.class, "social account")
+                    .registerSubtype(BankAccount.class, "bank account")
+                    .registerSubtype(EmailAccount.class, "email account");
 
+            Gson gson = new GsonBuilder().registerTypeAdapterFactory(accountFactory).create();
+            gson.toJson(users, br);
+        } catch (IOException e) {
+            System.out.println("Error saving data...");
+        }
     }
 
     public void loadUsers() {
-        try (BufferedReader br = new BufferedReader(new FileReader("data/users.json"))) {
-            Type usersList = new TypeToken<ArrayList<User>>() {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            RuntimeTypeAdapterFactory<AccountEntry> accountFactory = RuntimeTypeAdapterFactory
+                    .of(AccountEntry.class, "type")
+                    .registerSubtype(SocialAccount.class, "social account")
+                    .registerSubtype(BankAccount.class, "bank account")
+                    .registerSubtype(EmailAccount.class, "email account");
+
+            Gson gson = new GsonBuilder().registerTypeAdapterFactory(accountFactory).create();
+            Type accountList = new TypeToken<ArrayList<AccountEntry>>() {
             }.getType();
-            Gson gson = new Gson();
-            users = gson.fromJson(br, usersList);
+            users = gson.fromJson(br, accountList);
         } catch (IOException e) {
-            System.out.println("File not found");
+            System.out.println("Error saving data...");
         }
     }
 

@@ -1,16 +1,13 @@
 package org.example.Models;
 
-public class SocialKey extends PasswordEntry implements Encryptable{
-    private String username;
-    private String platform;
+public class EmailAccount extends AccountEntry implements Encryptable{
+    private String email;
     private String password;
 
-    public SocialKey(String username, String platform, String password) {
-        this.username = username;
-        this.platform = platform;
+    public EmailAccount(String email, String password) {
+        this.email = email;
         this.password = password;
     }
-
 
     @Override
     public String getKey() {
@@ -28,6 +25,6 @@ public class SocialKey extends PasswordEntry implements Encryptable{
     }
     @Override
     public String toString() {
-        return String.format("%s:%s:%s", username, platform, password);
+        return String.format("%s:%s",email, password);
     }
 }
