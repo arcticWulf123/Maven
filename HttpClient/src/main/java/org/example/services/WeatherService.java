@@ -1,13 +1,14 @@
 package org.example.services;
 
 import com.google.gson.Gson;
-import org.example.models.WeatherResponse;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import org.example.models.WeatherResponse;
 
 public class WeatherService {
     public WeatherService (){}
@@ -30,12 +31,10 @@ public class WeatherService {
                 System.out.println("SUCCESS! Raw JSON data received:");
                 System.out.println(response.body());
                 return gson.fromJson(response.body(), WeatherResponse.class);
-            } else {
-                throw new RuntimeException("Failed to fetch post: " + response.statusCode());
             }
 
         } catch (IOException e) {
-            System.err.println("NETWORK ERROR: " + e.getMessage());
+            System.err.println("Error! Could not retrieve weather data...");
         } catch (InterruptedException e) {
             System.out.println("NETWORK ERROR: " + e.getMessage());
         }

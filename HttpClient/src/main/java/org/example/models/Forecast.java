@@ -8,7 +8,14 @@ public class Forecast {
     @SerializedName("wind10m")
     private Wind wind;
 
-    public Forecast(){}
+    public void setWind(Wind wind) {
+        this.wind = wind;
+    }
+    public Forecast(int timepoint, int temp2m, Wind wind){
+        this.timepoint = timepoint;
+        this.temp2m = temp2m;
+        this.wind = wind;
+    }
     public int getTimepoint() {
         return timepoint;
     }
@@ -29,7 +36,8 @@ public class Forecast {
         return wind;
     }
 
-    public void setWind(Wind wind) {
-        this.wind = wind;
+    @Override
+    public String toString(){
+        return String.format("At hour %d: %d °C with %d speed winds from the %s.", timepoint, temp2m, wind.getSpeed(), wind.getDirection());
     }
 }
