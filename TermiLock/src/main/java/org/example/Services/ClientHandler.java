@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable {
             int user = Integer.parseInt(in.readLine());
             switch (user) {
                 case 1:
-                    System.out.println("");
+                    System.out.println("Welcome");
 /*
 TO DO 
 1. ClientHandler
@@ -32,7 +32,6 @@ TO DO
 3. Client
 
 */
-
             }
         } catch (IOException e) {
             System.err.print("Error! could not retrieve needed data...");
