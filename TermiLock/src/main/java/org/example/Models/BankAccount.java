@@ -4,6 +4,16 @@ public class BankAccount extends AccountEntry implements Encryptable{
     private int BankNumber;
     private String pin;
 
+    public String getPin() {
+        return pin;
+    }
+
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+
     public BankAccount(int BankNumber, String pin) {
         this.BankNumber = BankNumber;
         this.pin = pin;

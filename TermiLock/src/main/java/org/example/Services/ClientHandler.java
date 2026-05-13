@@ -6,6 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/*
+TO DO 
+1. ClientHandler
+2. Server
+3. Client
+*/
 public class ClientHandler implements Runnable {
     private Socket socket;
     private PrintWriter out;
@@ -19,19 +25,15 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             UserService userService = new UserService();
+            AccountService accountService = new AccountService();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
             int user = Integer.parseInt(in.readLine());
             switch (user) {
                 case 1:
-                    System.out.println("Welcome");
-/*
-TO DO 
-1. ClientHandler
-2. Server
-3. Client
+                    
+                case 2:
 
-*/
             }
         } catch (IOException e) {
             System.err.print("Error! could not retrieve needed data...");

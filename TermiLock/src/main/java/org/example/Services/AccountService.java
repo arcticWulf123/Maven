@@ -76,10 +76,43 @@ public class AccountService {
                 """, e.getBankNumber(), e.getPin());
     }
 
-    public void searchAccount() {
-        for (AccountEntry e : accountList) {
-            //TODO
+    public void searchAccount(String query) {
+        String q = query.toLowerCase().trim();
+
+        List<AccountEntry> results = accountList.stream()
+                .filter(e -> {
+                    if (e instanceof EmailAccount email) {
+                        return email.getEmail().toLowerCase().contains(q);
+                    } else if (e instanceof BankAccount bank) {
+                        return String.valueOf(bank.getBankNumber()).contains(q);
+                    } else if (e instanceof SocialAccount social) {
+                        return social.getUsername().toLowerCase().contains(q) ||
+                                social.getPlatform().toLowerCase().contains(q);
+                    }
+                    return false;
+                })
+                .toList();
+
+        if (results.isEmpty()) {
+            System.out.println("Sorry... we did not find anything related to that query.");
+            return;
         }
+
+        System.out.println("Search results for: \"" + query + "\"");
+        System.out.println("=".repeat(40));
+
+        for (AccountEntry e : results) {
+            if (e instanceof EmailAccount email) {
+                viewEmailAccount(email);
+            } else if (e instanceof BankAccount bank) {
+                viewBankAccount(bank);
+            } else if (e instanceof SocialAccount social) {
+                viewSocialAccount(social);
+            }
+            System.out.println("-".repeat(40));
+        }
+
+        System.out.println("Total: " + results.size() + " result(s) found.");
     }
 
 }
