@@ -14,7 +14,7 @@ public class UserService {
     public static final String filePath = "data/users.json";
 
     public UserService() {
-        loadUsers();
+        // loadUsers();
     }
 
     public boolean doesExist(String username, String password) {

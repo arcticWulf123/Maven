@@ -14,7 +14,9 @@ public class Client {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 Scanner sc = new Scanner(System.in)) {
                     while (true) {
-
+                        System.out.println(in.readLine());
+                        int choice = sc.nextInt();
+                        out.println(choice);
                     }
         } catch (IOException e) {
             System.err.print("");

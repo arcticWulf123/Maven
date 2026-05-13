@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable {
             int user = Integer.parseInt(in.readLine());
             switch (user) {
                 case 1:
-                    
+                    out.println("Enter your username");
                 case 2:
 
             }
