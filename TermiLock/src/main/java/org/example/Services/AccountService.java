@@ -114,5 +114,4 @@ public class AccountService {
 
         System.out.println("Total: " + results.size() + " result(s) found.");
     }
-
 }

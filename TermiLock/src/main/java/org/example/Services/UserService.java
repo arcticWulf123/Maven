@@ -11,6 +11,7 @@ import java.util.*;
 
 public class UserService {
     private List<User> users = new ArrayList<>();
+    private List<String> loggedInUsers = new ArrayList<>();
     public static final String filePath = "data/users.json";
 
     public UserService() {
@@ -26,7 +27,29 @@ public class UserService {
         return false;
     }
 
-    public void saveData() {
+    public synchronized User login(String username, String password) {
+        if (loggedInUsers.contains(username)) {
+            System.out.println("This user is already logged in!");
+            return null;
+        }
+
+        for (User u : users) {
+            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
+                loggedInUsers.add(username); // mark as logged in
+                return u; // return the matched User object
+            }
+        }
+
+        System.out.println("Invalid username or password.");
+        return null; // no match found
+    }
+
+    public synchronized void signup(String username, String password) {
+        User u = new User(username, password);
+        users.add(u);
+    }
+
+    public synchronized void saveData() {
         try (BufferedWriter br = new BufferedWriter(new FileWriter(filePath))) {
             RuntimeTypeAdapterFactory<AccountEntry> accountFactory = RuntimeTypeAdapterFactory
                     .of(AccountEntry.class, "type")
@@ -37,11 +60,11 @@ public class UserService {
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(accountFactory).create();
             gson.toJson(users, br);
         } catch (IOException e) {
-            System.out.println("Error saving data...");
+            System.out.println("Error saving user data to json...");
         }
     }
 
-    public void loadUsers() {
+    public synchronized void loadUsers() {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             RuntimeTypeAdapterFactory<AccountEntry> accountFactory = RuntimeTypeAdapterFactory
                     .of(AccountEntry.class, "type")
@@ -54,7 +77,7 @@ public class UserService {
             }.getType();
             users = gson.fromJson(br, accountList);
         } catch (IOException e) {
-            System.out.println("Error saving data...");
+            System.out.println("Error saving user data to json...");
         }
     }
 

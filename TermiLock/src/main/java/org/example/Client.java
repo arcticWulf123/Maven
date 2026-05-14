@@ -19,7 +19,7 @@ public class Client {
                         out.println(choice);
                     }
         } catch (IOException e) {
-            System.err.print("");
+            System.err.print("Error! Could not connect to the server...");
         }
     }
 }
