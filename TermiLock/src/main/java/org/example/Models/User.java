@@ -8,6 +8,10 @@ public class User {
     private String password;
     private List<AccountEntry> accounts = new ArrayList<>();
 
+    public void setAccounts(List<AccountEntry> accounts) {
+        this.accounts = accounts;
+    }
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;

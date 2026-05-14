@@ -2,8 +2,9 @@ package org.example.Services;
 
 import java.io.IOException;
 
-public class Lockdown {
-    public void killScreen() {
+public class Lockdown extends Thread{
+    @Override
+    public void run(){
         String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("win")) {
@@ -25,6 +26,9 @@ public class Lockdown {
             } catch (IOException e) {
                 e.printStackTrace();
                 e.printStackTrace();
+            } finally {
+                System.out.println("No inputs detected, clearing and exiting the terminal...");
+                System.exit(0);
             }
         }
     }
