@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class UserService {
+    private static UserService instance;
     private List<User> users = new ArrayList<>();
     private List<String> loggedInUsers = new ArrayList<>();
     public static final String filePath = "data/users.json";
@@ -18,13 +19,20 @@ public class UserService {
         // loadUsers();
     }
 
-    public boolean doesExist(String username, String password) {
+    public synchronized boolean doesExist(String username, String password) {
         for (User user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static synchronized UserService getInstance() {
+        if (instance == null) {
+            instance = new UserService();
+        }
+        return instance;
     }
 
     public synchronized User login(String username, String password) {

@@ -1,0 +1,24 @@
+[
+    {
+        "username": "jade",
+        "password": "1234",
+        "accounts": [
+            {
+                "type": "bank account",
+                "BankNumber": 12312412,
+                "pin": "12323"
+            }
+        ]
+    },
+    {
+        "username": "ben",
+        "password": "1234",
+        "accounts": [
+            {
+                "type": "bank account",
+                "BankNumber": 1231214,
+                "pin": "3123"
+            }
+        ]
+    }
+]

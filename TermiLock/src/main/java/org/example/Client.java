@@ -16,13 +16,18 @@ public class Client {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 Scanner sc = new Scanner(System.in)) {
             while (true) {
-                String message = in.readLine();
+                StringBuilder message = new StringBuilder();
+                String line;
 
-                System.out.println(message);
-
-                if (message.equals("exit")) {
-                    System.exit(1);
+                while ((line = in.readLine()) != null) {
+                    if (line.equals("END"))
+                        break; 
+                    if (line.equals("exit"))
+                        System.exit(0);
+                    message.append(line).append("\n");
                 }
+
+                System.out.print(message); 
 
                 String response = sc.nextLine();
                 out.println(response);
@@ -36,7 +41,7 @@ public class Client {
         Lockdown lock = new Lockdown();
         lock.start();
         try {
-            Lockdown.sleep(1000);
+            Lockdown.sleep(30000);
         } catch (InterruptedException e) {
             System.out.println("Could not load Thread");
         }

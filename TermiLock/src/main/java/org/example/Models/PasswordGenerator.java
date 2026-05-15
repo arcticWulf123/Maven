@@ -6,7 +6,7 @@ public class PasswordGenerator {
     static String DIGITS = "0123456789";
     static String SYMBOLS = "!@#$%^&*()-_=+[]{}|;:,.<>?";
 
-    public static String generate(int length) {
+    public synchronized String generate(int length) {
         String charset = UPPERCASE + LOWERCASE + DIGITS + SYMBOLS;
         char[] password = new char[length];
 
