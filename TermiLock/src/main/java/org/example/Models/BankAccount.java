@@ -36,7 +36,7 @@ public class BankAccount extends AccountEntry implements Encryptable{
     }
     @Override
     public String toString() {
-        return String.format("%s:%s", BankNumber, pin);
+        return String.format("%s : %s", BankNumber, pin);
     }
 
     public int getBankNumber() {
