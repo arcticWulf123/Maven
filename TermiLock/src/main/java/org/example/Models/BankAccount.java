@@ -26,15 +26,6 @@ public class BankAccount extends AccountEntry implements Encryptable{
     }
 
     @Override
-    public void encrypt(String pin) {
-        Encryptable.super.encrypt(pin);  // calls the default method
-    }
-
-    @Override
-    public String decrypt(String pin) {
-        return Encryptable.super.decrypt(pin);  // calls the default method
-    }
-    @Override
     public String toString() {
         return String.format("%s : %s", BankNumber, pin);
     }

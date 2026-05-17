@@ -16,7 +16,7 @@ public class UserService {
     public static final String filePath = "data/users.json";
 
     public UserService() {
-        // loadUsers();
+        loadUsers();
     }
 
     public synchronized boolean doesExist(String username, String password) {
@@ -65,8 +65,21 @@ public class UserService {
                     .registerSubtype(BankAccount.class, "bank account")
                     .registerSubtype(EmailAccount.class, "email account");
 
-            Gson gson = new GsonBuilder().registerTypeAdapterFactory(accountFactory).create();
-            gson.toJson(users, br);
+            // plain gson, no encryption factory
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapterFactory(accountFactory)
+                    .create();
+
+            // serialize normally first
+            Type userList = new TypeToken<ArrayList<User>>() {
+            }.getType();
+            JsonElement tree = gson.toJsonTree(users, userList);
+
+            // then encrypt manually
+            encryptTree(tree);
+
+            br.write(gson.toJson(tree));
+
         } catch (IOException e) {
             System.out.println("Error saving user data to json...");
         }
@@ -80,13 +93,81 @@ public class UserService {
                     .registerSubtype(BankAccount.class, "bank account")
                     .registerSubtype(EmailAccount.class, "email account");
 
-            Gson gson = new GsonBuilder().registerTypeAdapterFactory(accountFactory).create();
-            Type accountList = new TypeToken<ArrayList<AccountEntry>>() {
+            // plain gson, no encryption factory
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapterFactory(accountFactory)
+                    .create();
+
+            // parse json first
+            JsonElement tree = JsonParser.parseReader(br);
+
+            // decrypt manually before deserializing
+            decryptTree(tree);
+
+            Type userList = new TypeToken<ArrayList<User>>() {
             }.getType();
-            users = gson.fromJson(br, accountList);
+            users = gson.fromJson(tree, userList);
+
+            if (users == null)
+                users = new ArrayList<>();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("No existing data found, starting fresh...");
+            users = new ArrayList<>();
         } catch (IOException e) {
-            System.out.println("Error saving user data to json...");
+            System.out.println("Error loading user data from json...");
         }
     }
 
+    private void encryptTree(JsonElement element) {
+        if (element.isJsonArray()) {
+            for (JsonElement e : element.getAsJsonArray())
+                encryptTree(e);
+        } else if (element.isJsonObject()) {
+            JsonObject obj = element.getAsJsonObject();
+            for (String key : new HashSet<>(obj.keySet())) {
+                if (key.equals("type"))
+                    continue; // ← never encrypt type
+                JsonElement el = obj.get(key);
+                if (el.isJsonPrimitive() && el.getAsJsonPrimitive().isString()) {
+                    obj.addProperty(key, encrypt(el.getAsString()));
+                } else {
+                    encryptTree(el); // recurse into nested objects/arrays
+                }
+            }
+        }
+    }
+
+    private void decryptTree(JsonElement element) {
+        if (element.isJsonArray()) {
+            for (JsonElement e : element.getAsJsonArray())
+                decryptTree(e);
+        } else if (element.isJsonObject()) {
+            JsonObject obj = element.getAsJsonObject();
+            for (String key : new HashSet<>(obj.keySet())) {
+                if (key.equals("type"))
+                    continue; // ← never decrypt type
+                JsonElement el = obj.get(key);
+                if (el.isJsonPrimitive() && el.getAsJsonPrimitive().isString()) {
+                    obj.addProperty(key, decrypt(el.getAsString()));
+                } else {
+                    decryptTree(el); // recurse into nested objects/arrays
+                }
+            }
+        }
+    }
+
+    private String encrypt(String entry) {
+        char[] chars = entry.toCharArray();
+        for (int i = 0; i < chars.length; i++)
+            chars[i] += 5;
+        return String.valueOf(chars);
+    }
+
+    private String decrypt(String entry) {
+        char[] chars = entry.toCharArray();
+        for (int i = 0; i < chars.length; i++)
+            chars[i] -= 5;
+        return String.valueOf(chars);
+    }
 }

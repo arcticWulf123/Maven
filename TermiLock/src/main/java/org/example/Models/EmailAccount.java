@@ -31,15 +31,6 @@ public class EmailAccount extends AccountEntry implements Encryptable{
     }
 
     @Override
-    public void encrypt(String entry) {
-        Encryptable.super.encrypt(entry);  // calls the default method
-    }
-
-    @Override
-    public String decrypt(String entry) {
-        return Encryptable.super.decrypt(entry);  // calls the default method
-    }
-    @Override
     public String toString() {
         return String.format("%s:%s",email, password);
     }

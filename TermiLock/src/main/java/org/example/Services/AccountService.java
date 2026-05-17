@@ -94,11 +94,9 @@ public class AccountService {
     }
 
     /*
-     * 1. Update working
-     * 2. Generator working
-     * 3. Add working
-     * 4.
-     */
+    1. Print entries nicely in delete, update and remove
+    2. Implement encrypt/decrypt
+    */
     public synchronized void deleteAccountEntry(Socket socket, PrintWriter out, BufferedReader in, User u) {
         String yesOrNo = "";
         while (true) {

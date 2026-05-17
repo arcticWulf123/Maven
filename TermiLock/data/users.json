@@ -1,1 +1,36 @@
-[{"username":"jade","password":"1234","accounts":[{"type":"email account","email":"jasjdajdasd","password":"1234123"},{"type":"social account","username":"ajusadasd","platform":"jasdjasd","password":"1234123"}]}]
+[
+    {
+        "username": "ofij",
+        "password": "6789",
+        "accounts": [
+            {
+                "type": "bank account",
+                "BankNumber": 712314,
+                "pin": "6789"
+            },
+            {
+                "type": "email account",
+                "email": "ofijErfnq3htr",
+                "password": "mjqqt|wtqi6789"
+            },
+            {
+                "type": "social account",
+                "username": "ljqttt",
+                "platform": "nsxyflwfr",
+                "password": "\u003c679"
+            }
+        ]
+    },
+    {
+        "username": "mfww~",
+        "password": "6787",
+        "accounts": [
+            {
+                "type": "social account",
+                "username": "mz6777",
+                "platform": "kfhjgttp",
+                "password": "\u003d679"
+            }
+        ]
+    }
+]
